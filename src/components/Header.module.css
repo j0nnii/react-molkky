@@ -1,0 +1,13 @@
+.headerContainer {
+  display: flex;
+  padding-top: 20px;
+}
+
+.headerAreaLarge {
+  flex-grow: 1;
+}
+
+.headerAreaSmall {
+  flex-grow: 0;
+  font-size: 24px;
+}
