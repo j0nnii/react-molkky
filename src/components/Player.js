@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const Player = ({ name, score }) => {
+const Player = ({ isCurrentPlayer, playerIndex, score, onNameChange }) => {
+  const [playerName, setPlayerName] = useState('');
   return (
-    <div className="item">
+    <div className="item" style={ !isCurrentPlayer ? { opacity: '0.5', pointerEvents: 'none' } : null }>
       <div className="left floated content">
         <div>{score}</div>
       </div>
@@ -13,11 +14,11 @@ const Player = ({ name, score }) => {
           min="0"
           style={{ width: '7rem', height: '2rem' }}
         />
-        <button className="ui button">+</button>
+        <button className="ui button" onClick={() => console.log('addToUserScore()')}>+</button>
       </div>
 
       <div className="content">
-        <div className="header">{name}</div>
+        <div className="header"><input type="text" placeholder="Name" onBlur={() => onNameChange(playerIndex, playerName)} value={playerName} onChange={(e) => setPlayerName(e.target.value)} style={{ border: '0' }} /></div>
       </div>
     </div>
   );
