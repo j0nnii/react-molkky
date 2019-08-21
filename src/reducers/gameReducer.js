@@ -7,16 +7,7 @@ const INITIAL_STATE = {
 
   currentRound: 1,
   currentPlayer: 0,
-  players: [
-    {
-      name: "Jonni",
-      gameData: [{ round: 1, turns: [5, 3, 2] }, { round: 2, turns: [2, 5, 2] }]
-    },
-    {
-      name: "Sonja",
-      gameData: [{ round: 1, turns: [5, 1, 2] }, { round: 2, turns: [2, 5, 5] }]
-    }
-  ]
+  players: []
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -42,44 +33,29 @@ export default (state = INITIAL_STATE, action) => {
         players: changedPlayers
       };
     case "ADD_TURN_SCORE":
-      /*const changedTurnScore = [...state.players];
-
-      const currentRoundTurns = state.players[
-        state.currentPlayer
-      ].gameData.filter(gameData => gameData.round === state.currentRound);
-
-      if (!currentRoundTurns) {
-        changedTurnScore[state.currentPlayer].gamedata.push({
-          round: state.currentRound,
-          turns: [{ turn: 1, points: action.payload }]
-        });
-      }
-
-      changedTurnScore[state.currentPlayer].gamedata = action.payload;
-      return {
-        ...state,
-        players: changedTurnScore
-      };*/
-
-      //will return index if has current round already
+      // Will return index if has current round already
       const gameDataRoundIndex = state.players[
         state.currentPlayer
       ].gameData.findIndex(item => item.round === state.currentRound);
+
+      // Create new constant with copy of existing player state
       const changedScore = [...state.players];
 
-      console.log(gameDataRoundIndex);
-      console.log(changedScore);
-
+      // If round is not found in player state, create it
       if (gameDataRoundIndex < 0) {
         changedScore[state.currentPlayer].gameData.push({
           round: state.currentRound,
-          turns: [...action.payload]
+          turns: [action.payload]
         });
+
+        // Else just add score to turns
       } else {
         changedScore[state.currentPlayer].gameData[
           gameDataRoundIndex
         ].turns.push(action.payload);
       }
+
+      //console.log(changedScore[state.currentPlayer].gameData[]);
 
       const changeRound =
         state.currentPlayer++ === state.players.length - 1 ? true : false;

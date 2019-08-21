@@ -21,10 +21,12 @@ class App extends React.Component {
   };
 
   onAddTurnScore = score => {
-    this.props.addTurnScore(score);
+    this.props.addTurnScore(parseInt(score));
   };
 
   roundScore(playerIndex) {
+    // Return if player is not set yet
+    if (!this.props.players[playerIndex]) return 0;
     const currentPlayerRound = this.props.players[playerIndex].gameData.filter(
       gameData => gameData.round === this.props.currentRound
     );
@@ -62,19 +64,13 @@ class App extends React.Component {
         </div>
         <button
           className="ui button primary"
-          onClick={() => this.setState({ settingsVisible: true })}
-        >
-          Settings
-        </button>
-        <button
-          className="ui button primary"
           onClick={() => this.props.addGamePlayer()}
         >
           Add player
         </button>
-        {this.state.settingsVisible ? (
+        {this.roundScore(this.props.currentPlayer) === 50 ? (
           <Modal
-            title="Settings"
+            title="Winner is here!!!"
             onDismiss={() => this.setState({ settingsVisible: false })}
             actions={this.settingsActions()}
             content={this.settingsContent()}

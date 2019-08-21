@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import styles from "./Player.module.css";
 
+// Destruct props
 const Player = ({
   name,
   isCurrentPlayer,
@@ -7,10 +9,11 @@ const Player = ({
   onNameChange,
   onAddTurnScore
 }) => {
+  // Define state variables and setters
   const [playerName, setPlayerName] = useState(name);
   const [turnScore, setTurnScore] = useState(0);
   return (
-    <div className="item" style={!isCurrentPlayer ? { opacity: "0.3" } : null}>
+    <div className={`item ${isCurrentPlayer ? styles.current : null}`}>
       <div className="left floated content" style={{ width: "30px" }}>
         <div>{roundScore}</div>
       </div>
@@ -22,10 +25,11 @@ const Player = ({
           value={turnScore}
           onChange={e => setTurnScore(e.target.value)}
           style={{ width: "7rem", height: "2rem" }}
+          className={!isCurrentPlayer ? styles.disabled : null}
         />
         <button
-          className="ui button"
-          onClick={() => onAddTurnScore(parseInt(turnScore))}
+          className={`ui button ${!isCurrentPlayer ? styles.disabled : null}`}
+          onClick={() => onAddTurnScore(Number(turnScore))}
         >
           +
         </button>
@@ -39,7 +43,7 @@ const Player = ({
             onBlur={() => onNameChange(playerName)}
             value={playerName}
             onChange={e => setPlayerName(e.target.value)}
-            style={{ border: "0" }}
+            style={{ border: "0", background: "none" }}
           />
         </div>
       </div>
