@@ -1,9 +1,9 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import Header from './Header';
-import Player from './Player';
-import Modal from './Modal';
-import { addGamePlayer, changePlayerName } from '../actions';
+import React from "react";
+import { connect } from "react-redux";
+import Header from "./Header";
+import Player from "./Player";
+import Modal from "./Modal";
+import { addGamePlayer, setPlayerName, addTurnScore } from "../actions";
 
 class App extends React.Component {
   state = { settingsVisible: false };
@@ -13,16 +13,43 @@ class App extends React.Component {
   }
 
   settingsContent() {
-    return 'Content here';
+    return "Content here";
   }
 
-  onNameChange = (playerIndex, name) => {
-    this.props.changePlayerName(playerIndex, name);
+  onNameChange = name => {
+    this.props.setPlayerName(name);
   };
+
+  onAddTurnScore = score => {
+    this.props.addTurnScore(score);
+  };
+
+  roundScore(playerIndex) {
+    const currentPlayerRound = this.props.players[playerIndex].gameData.filter(
+      gameData => gameData.round === this.props.currentRound
+    );
+    if (!currentPlayerRound[0]) return 0;
+    const currentRoundPoints = currentPlayerRound[0].turns.reduce(
+      (a, b) => a + b
+    );
+    return currentRoundPoints;
+  }
 
   renderPlayers() {
     return this.props.players.map((player, playerIndex) => {
-        return <Player key={`player${playerIndex}`} isCurrentPlayer={ playerIndex === this.props.currentPlayer ? true : false } score="0" playerIndex={playerIndex} onNameChange={this.onNameChange} />
+      return (
+        <Player
+          name={player.name}
+          key={`player${playerIndex}`}
+          isCurrentPlayer={
+            playerIndex === this.props.currentPlayer ? true : false
+          }
+          roundScore={this.roundScore(playerIndex)}
+          playerIndex={playerIndex}
+          onNameChange={this.onNameChange}
+          onAddTurnScore={this.onAddTurnScore}
+        />
+      );
     });
   }
 
@@ -59,7 +86,14 @@ class App extends React.Component {
 }
 
 const mapStateToProps = ({ game }) => {
-  return { players: game.players, currentPlayer: game.currentPlayer };
-}
+  return {
+    players: game.players,
+    currentRound: game.currentRound,
+    currentPlayer: game.currentPlayer
+  };
+};
 
-export default connect(mapStateToProps, { addGamePlayer, changePlayerName })(App);
+export default connect(
+  mapStateToProps,
+  { addGamePlayer, setPlayerName, addTurnScore }
+)(App);
