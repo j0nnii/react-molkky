@@ -13,20 +13,26 @@ const Player = ({
 }) => {
   // Define state variables and setters
   const [playerName, setPlayerName] = useState(name);
-  const [turnScore, setTurnScore] = useState(0);
-  const onAddScore = (score) => {
+  const [turnScore, setTurnScore] = useState("");
+  const onAddScore = score => {
     onAddTurnScore(Number(score));
-    setTurnScore(0);
+    setTurnScore("");
   };
   return (
-    <div className={`item ${isCurrentPlayer ? styles.current : null}`}>
+    <div
+      className={`player${playerIndex} item ${
+        isCurrentPlayer ? styles.current : null
+      }`}
+    >
       <div className="left floated content" style={{ width: "30px" }}>
         <div>{roundScore}</div>
       </div>
 
       <div className="right floated content ui action input">
         <input
+          id={`player${playerIndex}Score`}
           type="number"
+          placeholder="0"
           min="0"
           max="12"
           value={turnScore}
@@ -35,7 +41,9 @@ const Player = ({
           className={!isCurrentPlayer ? styles.disabled : null}
         />
         <button
-          className={`ui button ${!isCurrentPlayer ? styles.disabled : null}`}
+          className={`addScore ui button ${
+            !isCurrentPlayer ? styles.disabled : null
+          }`}
           onClick={() => onAddScore(turnScore)}
         >
           +
@@ -45,6 +53,7 @@ const Player = ({
       <div className="content">
         <div className="header">
           <input
+            id={`player${playerIndex}Name`}
             type="text"
             placeholder="Name"
             onBlur={() => onNameChange(playerIndex, playerName)}
@@ -52,7 +61,9 @@ const Player = ({
             onChange={e => setPlayerName(e.target.value)}
             style={{ border: "0", background: "none" }}
           />
-          {dismissed ? <span style={{ color: 'red'}}>User should be dismissed</span> : null }
+          {dismissed ? (
+            <span className={styles.dismissed}>User should be dismissed</span>
+          ) : null}
         </div>
       </div>
     </div>

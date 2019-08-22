@@ -44,18 +44,24 @@ class App extends React.Component {
 
   // Action buttons for modal based on if we are on round 1 or not
   winnerActionButtons() {
-    const prevButton = this.props.currentRound > 1 ? <button className="ui primary button" onClick={() => this.props.setGameRound(this.props.currentRound - 1)}>Previous round</button> : null;
+    const prevButton =
+      this.props.currentRound > 1 ? (
+        <button
+          className="ui primary button"
+          onClick={() => this.props.setGameRound(this.props.currentRound - 1)}
+        >
+          Previous round
+        </button>
+      ) : null;
     return (
       <React.Fragment>
         {prevButton}
         <button
           className="ui primary button"
-          onClick={() =>
-            this.props.setGameRound(this.props.currentRound + 1)
-          }
-          >
+          onClick={() => this.props.setGameRound(this.props.currentRound + 1)}
+        >
           Next round
-          </button>
+        </button>
       </React.Fragment>
     );
   }
@@ -85,10 +91,11 @@ class App extends React.Component {
   // Check if player is dismissed from round
   isDismissed(player) {
     const dismissedPlayer = this.props.dismissed.filter(
-      gameData => gameData.round === this.props.currentRound && gameData.player === player
+      gameData =>
+        gameData.round === this.props.currentRound && gameData.player === player
     );
     if (dismissedPlayer.length > 0) return true;
-    return false; 
+    return false;
   }
 
   renderPlayers() {
@@ -120,6 +127,7 @@ class App extends React.Component {
         </div>
         <button
           className="ui button primary"
+          id="addPlayer"
           onClick={() => this.props.addGamePlayer()}
         >
           Add player
