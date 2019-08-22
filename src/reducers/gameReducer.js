@@ -1,14 +1,9 @@
 const INITIAL_STATE = {
-  /*name: "Mölkkygame",
-  currentRound: 1,
-  currentPlayer: 0,
-  players: []*/
-  //name: "Mölkkygame",
-
   currentRound: 1,
   currentPlayer: 0,
   players: [],
-  winners: []
+  winners: [],
+  dismissed: []
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -35,9 +30,6 @@ export default (state = INITIAL_STATE, action) => {
         players: changedPlayers
       };
     case "ADD_TURN_SCORE":
-      console.log(state.currentPlayer);
-      console.log(state.players[state.currentPlayer]);
-      console.log(state.players[state.currentPlayer].name);
 
       // Will return index if has current round already
       const gameDataRoundIndex = state.players[
@@ -66,18 +58,34 @@ export default (state = INITIAL_STATE, action) => {
         state.currentPlayer
       ].gameData.findIndex(item => item.round === state.currentRound);
 
-      // Get current round points
-      const currentRoundPoints = changedScore[state.currentPlayer].gameData[
-        changedRoundIndex
-      ].turns.reduce((a, b) => a + b);
+      // Get current round turns for current player
+      const currentRoundPlayerTurns = changedScore[state.currentPlayer].gameData[changedRoundIndex].turns;
 
+      // Get current round points
+      const currentRoundPoints = currentRoundPlayerTurns.reduce((a, b) => a + b);
+
+      // Change round? 
       const changeRound =
         state.currentPlayer + 1 === state.players.length ? true : false;
+      
+      // Who is the next player?
       const nextPlayer = changeRound ? 0 : state.currentPlayer + 1;
+
+      // Check if player should be dismissed
+      let playerDismissed = false;
+      if (currentRoundPlayerTurns.length >= 3 && currentRoundPlayerTurns[currentRoundPlayerTurns.length-1] === 0 && currentRoundPlayerTurns[currentRoundPlayerTurns.length-2] === 0 && currentRoundPlayerTurns[currentRoundPlayerTurns.length-3] === 0) {
+        playerDismissed = true;
+      }
+
+      // Throw user back to score 25 if his total goes over 50
+      if (currentRoundPoints > 50) {
+        changedScore[state.currentPlayer].gameData[changedRoundIndex].turns = [25];
+      }
 
       return {
         ...state,
         winners:
+          // if we have a winner then mark him, also lets not change currentPlayer then
           currentRoundPoints === 50
             ? [
                 ...state.winners,
@@ -88,6 +96,19 @@ export default (state = INITIAL_STATE, action) => {
                 }
               ]
             : state.winners,
+        dismissed:
+          // if we have 3 consequtive 0s for player, then throw him out
+          playerDismissed
+            ? [
+                ...state.dismissed,
+                {
+                  round: state.currentRound,
+                  player: state.currentPlayer,
+                  name: state.players[state.currentPlayer].name
+                }
+              ]
+            : state.winners,
+         
         currentPlayer:
           currentRoundPoints === 50 ? state.currentPlayer : nextPlayer,
         players: changedScore

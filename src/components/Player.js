@@ -8,11 +8,16 @@ const Player = ({
   isCurrentPlayer,
   roundScore,
   onNameChange,
-  onAddTurnScore
+  onAddTurnScore,
+  dismissed
 }) => {
   // Define state variables and setters
   const [playerName, setPlayerName] = useState(name);
   const [turnScore, setTurnScore] = useState(0);
+  const onAddScore = (score) => {
+    onAddTurnScore(Number(score));
+    setTurnScore(0);
+  };
   return (
     <div className={`item ${isCurrentPlayer ? styles.current : null}`}>
       <div className="left floated content" style={{ width: "30px" }}>
@@ -23,6 +28,7 @@ const Player = ({
         <input
           type="number"
           min="0"
+          max="12"
           value={turnScore}
           onChange={e => setTurnScore(e.target.value)}
           style={{ width: "7rem", height: "2rem" }}
@@ -30,7 +36,7 @@ const Player = ({
         />
         <button
           className={`ui button ${!isCurrentPlayer ? styles.disabled : null}`}
-          onClick={() => onAddTurnScore(Number(turnScore))}
+          onClick={() => onAddScore(turnScore)}
         >
           +
         </button>
@@ -46,6 +52,7 @@ const Player = ({
             onChange={e => setPlayerName(e.target.value)}
             style={{ border: "0", background: "none" }}
           />
+          {dismissed ? <span style={{ color: 'red'}}>User should be dismissed</span> : null }
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ class Header extends React.Component {
   // Get current round's turn
   currentTurn() {
     // Return if player is not set yet
-    if (!this.props.players[this.props.currentPlayer]) return 0;
+    if (!this.props.players[this.props.currentPlayer]) return 1;
 
     // Get current user's round state by filtering it from props
     const currentPlayerRound = this.props.players[
@@ -24,7 +24,7 @@ class Header extends React.Component {
 
     // If current player round array exists, get the current turn from arrays length
     if (Array.isArray(currentPlayerRound) && currentPlayerRound.length) {
-      return currentPlayerRound[0].turns.length;
+      return currentPlayerRound[0].turns.length+1;
     } else {
       // Otherwise round will be 1
       return 1;
