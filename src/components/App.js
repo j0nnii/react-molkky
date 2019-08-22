@@ -3,21 +3,18 @@ import { connect } from "react-redux";
 import Header from "./Header";
 import Player from "./Player";
 import Modal from "./Modal";
-import { addGamePlayer, setPlayerName, addTurnScore } from "../actions";
+import {
+  addGamePlayer,
+  setPlayerName,
+  addTurnScore,
+  setGameRound
+} from "../actions";
 
 class App extends React.Component {
   state = { settingsVisible: false };
 
-  settingsActions() {
-    return <button className="ui primary button">Save</button>;
-  }
-
-  settingsContent() {
-    return "Content here";
-  }
-
-  onNameChange = name => {
-    this.props.setPlayerName(name);
+  onNameChange = (playerIndex, name) => {
+    this.props.setPlayerName(playerIndex, name);
   };
 
   onAddTurnScore = score => {
@@ -35,6 +32,36 @@ class App extends React.Component {
       (a, b) => a + b
     );
     return currentRoundPoints;
+  }
+
+  showWinner() {
+    const roundWinner = this.props.winners.filter(
+      gameData => gameData.round === this.props.currentRound
+    );
+    console.log(roundWinner);
+    if (
+      roundWinner.length > 0 &&
+      roundWinner[0].winner === this.props.currentPlayer
+    ) {
+      return (
+        <Modal
+          title="Winner is here!!!"
+          onDismiss={() => this.setState({ settingsVisible: false })}
+          actions={
+            <button
+              className="ui primary button"
+              onClick={() =>
+                this.props.setGameRound(this.props.currentRound + 1)
+              }
+            >
+              Proceed to Next round
+            </button>
+          }
+          content={roundWinner[0].name}
+        />
+      );
+    }
+    return;
   }
 
   renderPlayers() {
@@ -68,14 +95,7 @@ class App extends React.Component {
         >
           Add player
         </button>
-        {this.roundScore(this.props.currentPlayer) === 50 ? (
-          <Modal
-            title="Winner is here!!!"
-            onDismiss={() => this.setState({ settingsVisible: false })}
-            actions={this.settingsActions()}
-            content={this.settingsContent()}
-          />
-        ) : null}
+        {this.showWinner()}
       </div>
     );
   }
@@ -85,11 +105,12 @@ const mapStateToProps = ({ game }) => {
   return {
     players: game.players,
     currentRound: game.currentRound,
-    currentPlayer: game.currentPlayer
+    currentPlayer: game.currentPlayer,
+    winners: game.winners
   };
 };
 
 export default connect(
   mapStateToProps,
-  { addGamePlayer, setPlayerName, addTurnScore }
+  { addGamePlayer, setPlayerName, addTurnScore, setGameRound }
 )(App);

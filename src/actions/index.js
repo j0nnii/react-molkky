@@ -11,10 +11,10 @@ export const addGamePlayer = () => {
   };
 };
 
-export const setPlayerName = name => {
+export const setPlayerName = (playerIndex, name) => {
   return {
     type: "SET_PLAYER_NAME",
-    payload: name
+    payload: { playerIndex, name }
   };
 };
 

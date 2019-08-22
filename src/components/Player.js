@@ -3,6 +3,7 @@ import styles from "./Player.module.css";
 
 // Destruct props
 const Player = ({
+  playerIndex,
   name,
   isCurrentPlayer,
   roundScore,
@@ -40,7 +41,7 @@ const Player = ({
           <input
             type="text"
             placeholder="Name"
-            onBlur={() => onNameChange(playerName)}
+            onBlur={() => onNameChange(playerIndex, playerName)}
             value={playerName}
             onChange={e => setPlayerName(e.target.value)}
             style={{ border: "0", background: "none" }}
